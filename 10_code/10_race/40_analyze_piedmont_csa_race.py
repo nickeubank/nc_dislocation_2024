@@ -1,11 +1,12 @@
-import pandas as pd
-import numpy as np
+import warnings
+
 import geopandas as gpd
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn.objects as so
 import seaborn_objects_recipes as sor
 from matplotlib import style
-import matplotlib.pyplot as plt
-import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 nick_theme = {**style.library["seaborn-v0_8-whitegrid"]}
@@ -37,19 +38,27 @@ states = gpd.read_file("../../00_source_data/states_2020/US_state_2022.shp").to_
 nc = states[states["NAME"] == "North Carolina"]
 charlotte_shape = charlotte_concord_shape.clip(nc)
 
+# cbsa = gpd.read_file("../../00_source_data/msa_2020/US_cbsa_2020.shp").to_crs(
+#     epsg=PROJ
+# )
+# cbsa.loc[cbsa["NAME"].str.contains(" NC"), "NAME"]
+# charlotte_msa = cbsa[cbsa["NAME"] == "Charlotte-Concord-Gastonia, NC-SC"]
+# charlotte_msa.plot()
+
 
 # Sanity Check
 fig, ax = plt.subplots()
 nc.plot(ax=ax, color="blue", alpha=0.7)
 piedmont_shape.plot(ax=ax, color="red", alpha=0.7)
 charlotte_shape.plot(ax=ax, color="green", alpha=0.7)
+# charlotte_msa.plot(ax=ax, color="black", alpha=0.07)
 fig
 
 ###########
 # Key Params for figures
 ###########
 
-racial_groups = {0: "Not Any Part Black", 1: "Any Part Black"}
+racial_groups = {0: "White", 1: "Any Part Black"}
 csas = [
     {
         "short": "piedmont",

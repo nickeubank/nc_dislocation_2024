@@ -1,6 +1,6 @@
 import geopandas as gpd
-import pandas as pd
 import numpy as np
+import pandas as pd
 import partisan_dislocation as pdn
 
 pd.set_option("mode.copy_on_write", True)
@@ -8,16 +8,16 @@ pd.set_option("mode.copy_on_write", True)
 ############
 # Load districts and voters
 ############
-SAMPLE_PCT = 0.03
+SAMPLE_PCT = 0.02
 PROJ = 32119
 
 dists = dict()
 
-for year in [2022, 2024]:
+for year in [2022, 2024, 2025]:
     dists[year] = gpd.read_file(
-        f"../../00_source_data/district-shapes_{year}/district-shapes/POLYGON.shp"
+        f"../../20_intermediate_data/ncdistricts_{year}.geojson"
     ).to_crs(epsg=PROJ)
-    print(len(dists[year]))
+    assert len(dists[year]) == 14
 
 knn = gpd.read_file(
     f"../../20_intermediate_data/nc_knn_{SAMPLE_PCT:.2f}_sample_race.geojson"
@@ -32,13 +32,13 @@ assert 0.15 < knn.dem.mean()
 #########
 
 dislocation_points = dict()
-for year in [2022, 2024]:
+for year in [2022, 2024, 2025]:
     temp_df = pdn.calculate_dislocation(
         knn,
         dists[year],
         knn_column="knn_shr_dem",
         dem_column="dem",
-        district_id_col="NAME",
+        district_id_col="district",
     )
     temp_df["abs_partisan_dislocation"] = np.abs(temp_df["partisan_dislocation"])
 
@@ -49,7 +49,6 @@ for year in [2022, 2024]:
             "dem": "ap_black",
             "partisan_dislocation": "racial_dislocation",
             "abs_partisan_dislocation": "abs_racial_dislocation",
-            "NAME": "district",
         }
     )
     temp_df["map"] = year

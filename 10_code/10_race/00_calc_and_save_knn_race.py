@@ -1,17 +1,21 @@
-import geopandas as gpd
-import pandas as pd
-import numpy as np
-import partisan_dislocation as pdn
 import time
 
-SAMPLE_PCT = 0.01
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+import partisan_dislocation as pdn
+
+SAMPLE_PCT = 0.02
 PROJ = 32119
 
 pd.set_option("mode.copy_on_write", True)
 
-blocks = gpd.read_file("../../00_source_data/nhgis_blocks_2020/nc_block_2020.shp")
+# Census blocks
+blocks = gpd.read_file(
+    "../../00_source_data/nhgis_blocks_2020_raceonly/nc_block_2020.shp"
+).to_crs(PROJ)
 block_data = pd.read_csv(
-    "../../00_source_data/nhgis_blocks_2020/nhgis_ds248_2020_block.csv"
+    "../../00_source_data/nhgis_blocks_2020_raceonly/nhgis_ds248_2020_block.csv"
 )
 
 blocks = pd.merge(
@@ -56,9 +60,14 @@ black_cols = [
 ]
 
 blocks["ap_black"] = blocks[black_cols].sum(axis="columns")
-blocks["total_pop"] = blocks["U7D001"]
-blocks["not_ap_black"] = blocks["total_pop"] - blocks["ap_black"]
-blocks["share_ap_black"] = blocks["ap_black"] / blocks["total_pop"]
+blocks["vap"] = blocks["U7D001"]
+
+blocks["not_ap_black"] = blocks["vap"] - blocks["ap_black"]
+blocks["share_ap_black"] = blocks["ap_black"] / (blocks["vap"])
+blocks["share_ap_black"].describe()
+
+assert 0.2 < (blocks["ap_black"].sum() / (blocks["vap"].sum()))
+assert (blocks["ap_black"].sum() / (blocks["vap"].sum())) < 0.3
 
 # Sanity checks
 blocks.plot("share_ap_black", cmap="Reds", legend=True)
@@ -66,7 +75,6 @@ blocks.plot("share_ap_black", cmap="Reds", legend=True)
 #########
 # Points in Polygons
 #########
-
 
 print(f"Starting points in polygons, pct {SAMPLE_PCT:.3f}")
 start_time = time.time()
