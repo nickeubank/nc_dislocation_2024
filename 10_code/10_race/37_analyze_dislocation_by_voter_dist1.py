@@ -66,7 +66,7 @@ for name in map_names:
     voters = dislocation[name]
     district_polygons = dists[name]
 
-    _, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(6, 6))
 
     map_limits = ((600_000, 940_000), (20_000, 325_000))
     if map_limits is not None:
@@ -105,8 +105,9 @@ for name in map_names:
         markersize=2,
         alpha=0.8,
         legend_kwds={
-            "shrink": 0.5,
+            "shrink": 0.7,
             "pad": 0.07,
+            "location": "left",
         },
     )
 
@@ -174,7 +175,7 @@ for name in map_names:
     # Titles and such
     ######
     dislocation_label_text = "Racial Dislocation"
-    ax.set_title(f"{dislocation_label_text}, {name} Map")
+    fig.suptitle(f"{dislocation_label_text}\n{name} District Map", fontsize=14, y=0.90)
 
     note_text = (
         f"Racial Dislocation is the share of a voter's district that is"
@@ -185,18 +186,18 @@ for name in map_names:
 
     from textwrap import fill
 
-    wrapped_note = fill(note_text, width=100)
+    wrapped_note = fill(note_text, width=110)
 
     ax.figure.text(0.01, 0.1, wrapped_note, horizontalalignment="left", fontsize=8)
 
     # text
     SPACES = 50
     ax.figure.text(
-        1.3,
+        -0.3,
         0.5,
         f'Concentrated{" "* 10}Racial Dislocation{" "* 10}Diluted      \n("Packed"){" "*SPACES}("Cracked") ',
         transform=ax.transAxes,
-        rotation=270,
+        rotation=90,
         va="center",
         ha="center",
         fontsize=10,
@@ -205,10 +206,11 @@ for name in map_names:
     # Store up
     plots[name] = ax
 
-    # Adjust layout to add space on the right for colorbar
-    plt.tight_layout(rect=[0, 0, 0.85, 1])
+    # Adjust layout to add space on the left for colorbar
+    plt.tight_layout(rect=[0.05, 0.13, 1, 0.95])
 
 for p in plots.keys():
     plots[p].figure.savefig(
-        f"../../30_results/{p}_signed_dislocation_eastern_nc_minorityonly_race.png"
+        f"../../30_results/{p}_signed_dislocation_eastern_nc_minorityonly_race.png",
+        dpi=600,
     )
