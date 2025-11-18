@@ -143,7 +143,7 @@ for name in map_names:
         # "8": (0, 0),
         "13": (6_000, -20_000),
     }
-    if name == 2025:
+    if name == 2025 or name == 2024:
         hand_adjustments.update({"13": (6_000, -45_000)})
 
     def add_district_label(x):
@@ -175,13 +175,19 @@ for name in map_names:
     # Titles and such
     ######
     dislocation_label_text = "Racial Dislocation"
-    fig.suptitle(f"{dislocation_label_text}\n{name} District Map", fontsize=14, y=0.90)
+    if name != 2024:
+        fig.suptitle(
+            f"{dislocation_label_text}\n{name} District Map", fontsize=14, y=0.90
+        )
+    if name == 2024:
+        fig.suptitle(f"{dislocation_label_text}\n2023 Plan", fontsize=14, y=0.90)
 
     note_text = (
         f"Racial Dislocation is the share of a voter's district that is"
         " Any Part Black minus the share of the voter's k Nearest "
         "Neighbors who are Any Part Black. Colored dots show racial "
-        "dislocation for Any Part Black VAP North Carolineans. Non-Black voters not plotted."
+        "dislocation for Any Part Black VAP North Carolineans. "
+        "Non-Black voters not plotted."
     )
 
     from textwrap import fill
@@ -195,7 +201,7 @@ for name in map_names:
     ax.figure.text(
         -0.3,
         0.5,
-        f'Concentrated{" "* 10}Racial Dislocation{" "* 10}Diluted      \n("Packed"){" "*SPACES}("Cracked") ',
+        f'      Diluted{" "* 10}Racial Dislocation{" "* 10}Concentrated\n("Cracked") {" "*SPACES}("Packed")',
         transform=ax.transAxes,
         rotation=90,
         va="center",

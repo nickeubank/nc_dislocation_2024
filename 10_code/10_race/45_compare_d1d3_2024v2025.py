@@ -61,7 +61,13 @@ def plot_kdensities_diff_maps(race_key):
                 "map",
             ]
         ]
-        one_year_voters["Map"] = f"{year} Map"
+
+        if year == 2024:
+            one_year_voters["Map"] = f"2023 Plan"
+
+        if year == 2025:
+            one_year_voters["Map"] = f"2025 Map"
+
         voters.append(one_year_voters)
 
     voter_subset = pd.concat(voters)
@@ -112,7 +118,7 @@ def plot_kdensities_diff_maps(race_key):
     ax.text(
         means[2024],
         ax.get_ylim()[1] * 0.75,
-        "Mean, 2024",
+        "Mean, 2023",
         rotation=90,
         verticalalignment="top",
         horizontalalignment="right",
@@ -146,7 +152,7 @@ def plot_kdensities_diff_maps(race_key):
     ax.text(
         medians[2024],
         ax.get_ylim()[1] * 0.85,
-        "Median, 2024",
+        "Median, 2023",
         rotation=90,
         verticalalignment="top",
         horizontalalignment="right",
@@ -172,12 +178,12 @@ def plot_kdensities_diff_maps(race_key):
     )
 
     mean_change = (
-        f"Avg Dislocation, 2024: {means[2024]:.3f}\n"
+        f"Avg Dislocation, 2023: {means[2024]:.3f}\n"
         f"Avg Dislocation, 2025: {means[2025]:.3f}"
     )
 
     median_change = (
-        f"Median Dislocation, 2024: {medians[2024]:.3f}\n"
+        f"Median Dislocation, 2023: {medians[2024]:.3f}\n"
         f"Median Dislocation, 2025: {medians[2025]:.3f}"
     )
 
@@ -284,7 +290,7 @@ def plot_change_by_map(race_key):
             title=f"Individual-Level Change in Racial Dislocation\n"
             f"for {racial_groups[race_key]} VAP in Districts 1 and 3",
             y=f"Share of {racial_groups[race_key]} VAP",
-            x="Individual-Level Change in Racial Dislocation from 2024 Map to 2025 Map",
+            x="Individual-Level Change in Racial Dislocation from 2023 Plan to 2025 Plan",
         )
         .theme(nick_theme)
         .layout(extent=(0.1, 0.2, 0.9, 0.8))
